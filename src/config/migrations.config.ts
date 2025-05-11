@@ -1,6 +1,8 @@
 import { DataSource } from 'typeorm';
 import { User } from '../modules/users/entity/user.entity';
 import { Role } from '../modules/roles/entity/roles.entity';
+import { UserRole } from '../modules/roles/entity/user_roles.entity';
+
 import 'dotenv/config';
 
 const AppDataSource = new DataSource({
@@ -12,7 +14,7 @@ const AppDataSource = new DataSource({
   database: process.env.DB_NAME,
   subscribers: ['src/subscriber/**/*.ts'],
   migrationsTableName: 'migrations',
-  entities: [User, Role],
+  entities: [User, Role, UserRole],
   migrations: ['src/migrations/**/*.ts'],
 });
 
