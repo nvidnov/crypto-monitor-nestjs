@@ -1,20 +1,50 @@
 import { Injectable } from '@nestjs/common';
-
+import { User } from 'src/modules/users/entity/user.entity';
+import { Role } from 'src/modules/roles/entity/roles.entity';
+import { Repository } from 'typeorm';
+import { InjectRepository } from '@nestjs/typeorm';
+import { IUser } from '../types/User';
 @Injectable()
 export class UsersService {
-  getUsers(): { id: number; name: string }[] {
-    return [
-      {
-        id: 0,
-        name: 'John',
-      },
-      {
-        id: 1,
-        name: 'Jane',
-      },
-    ];
+  constructor(
+    @InjectRepository(User)
+    private readonly userRepository: Repository<User>,
+    @InjectRepository(Role)
+    private readonly rolesRepository: Repository<Role>,
+  ) {}
+  async selectAllUsers(): Promise<IUser[]> {
+    return (await this.userRepository.query(
+      'select * from Users',
+    )) as Promise<IUser[]>;
   }
-  getUser(id: string): { id: number; name: string } | undefined {
-    return this.getUsers().find((user) => user.id === parseInt(id));
+  async selectUserById(id: number): Promise<IUser> {
+    return (await this.userRepository.query(
+      'select * from Users where id = $1',
+      [id],
+    )) as Promise<IUser>;
+  }
+  async createUser({ login, email, password, role }: IUser) {
+    const roleDto = await this.rolesRepository.findOne({
+      where: {
+        id: role,
+      }
+    })
+    return await this.userRepository.save({
+      login,
+      email,
+      password,
+      role: roleDto, // приведение enum, если надо
+      createdAt: new Date(), // добавляем явно, если база не делает этого автоматически
+    });
+  }
+  async updateUser(
+    id: number,
+    { login, email, password }: IUser,
+  ): Promise<IUser> {
+    await this.userRepository.query(
+      'update Users set login = $1, email = $2, password = $3 where id = $4',
+      [login, email, password, id],
+    );
+    return  await this.selectUserById(id);
   }
 }

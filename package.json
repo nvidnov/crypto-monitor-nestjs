@@ -17,13 +17,18 @@
     "test:watch": "jest --watch",
     "test:cov": "jest --coverage",
     "test:debug": "node --inspect-brk -r tsconfig-paths/register -r ts-node/register node_modules/.bin/jest --runInBand",
-    "test:e2e": "jest --config ./test/jest-e2e.json"
+    "test:e2e": "jest --config ./test/jest-e2e.json",
+    "typeorm": "typeorm-ts-node-commonjs",
+    "migrate:run": "npx typeorm-ts-node-commonjs migration:run -d ./src/config/migrations.config.ts",
+    "migrate:revert": "npx typeorm-ts-node-commonjs migration:revert -d ./src/config/migrations.config.ts",
+    "migrate:generate": "npx typeorm-ts-node-commonjs migration:generate ./src/migrations/update-post-table -d ./src/config/migrations.config.ts"
   },
   "dependencies": {
     "@nestjs/common": "^11.0.1",
     "@nestjs/core": "^11.0.1",
     "@nestjs/platform-express": "^11.0.1",
     "@nestjs/sequelize": "^11.0.0",
+    "@nestjs/typeorm": "^11.0.0",
     "@types/sequelize": "^4.28.20",
     "dotenv": "^16.5.0",
     "mysql2": "^3.14.0",
@@ -32,7 +37,8 @@
     "reflect-metadata": "^0.2.2",
     "rxjs": "^7.8.1",
     "sequelize": "^6.37.7",
-    "sequelize-typescript": "^2.1.6"
+    "sequelize-typescript": "^2.1.6",
+    "typeorm": "^0.3.22"
   },
   "devDependencies": {
     "@eslint/eslintrc": "^3.2.0",
@@ -78,5 +84,6 @@
     ],
     "coverageDirectory": "../coverage",
     "testEnvironment": "node"
-  }
+  },
+  "type": "commonjs"
 }
