@@ -18,16 +18,42 @@ export class RolesService {
     }
     return roles;
   }
-  async createRole(): Promise<IRole> {
-    if ((await this.rolesRepository.find()).length === 0) {
-      await this.rolesRepository.save({
+  async createRole(id: IdRole): Promise<IRole> {
+    // Проверка: Если ID меньше 1 или больше 3 кидаем ошибку
+    if(id < IdRole.ADMIN || id > IdRole.USER ) {
+      throw new NotFoundException('Id is not corrected');
+    }
+    let rolesMap: Record<IdRole, IRole>;
+    rolesMap = {
+      [IdRole.ADMIN]: {
         id: IdRole.ADMIN,
         name: ERole.ADMIN,
         description: DescriptionRole.ADMIN,
-      });
-    } else {
-      throw new BadRequestException('Roles already exist');
+      },
+      [IdRole.CURATOR]: {
+        id: IdRole.CURATOR,
+        name: ERole.CURATOR,
+        description: DescriptionRole.CURATOR,
+      },
+      [IdRole.USER]: {
+        id: IdRole.USER,
+        name: ERole.USER,
+        description: DescriptionRole.USER,
+      },
+    };
+    const baseRole = rolesMap[id] ?? rolesMap[IdRole.USER];
+    const role: IRole = {
+      ...baseRole,
+    };
+    // Проверка: есть ли уже такая роль
+    const existing = await this.rolesRepository.findOne({ where: { id: baseRole.id } });
+    if (existing) {
+      throw new BadRequestException('Role already exists');
     }
-    return (await this.getRoles())[0];
+    try {
+      return  await this.rolesRepository.save(role);
+    } catch (e) {
+      throw new BadRequestException('Failed to create role');
+    }
   }
 }

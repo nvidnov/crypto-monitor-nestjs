@@ -1,6 +1,6 @@
-import { Controller, Get, Post } from '@nestjs/common';
+import { Body, Controller, Get, Post } from '@nestjs/common';
 import { RolesService } from '../services/roles.service';
-import { IRole } from '../types/Role';
+import { ICreateRoleDto, IRole } from '../types/Role';
 
 @Controller('/api')
 export class RolesController {
@@ -11,8 +11,8 @@ export class RolesController {
     return roles;
   }
   @Post('/roles/create')
-  async createRole(): Promise<IRole> {
-    const newRole = await this.rolesService.createRole();
-    return newRole;
+  async createRole(@Body() dto: ICreateRoleDto): Promise<IRole> {
+    const { id } = dto
+    return await this.rolesService.createRole(id);
   }
 }
