@@ -1,6 +1,5 @@
 import { Entity, Column, PrimaryGeneratedColumn, OneToMany } from 'typeorm';
 import { UserRole } from '../../roles/entity/user_roles.entity';
-
 @Entity('Users')
 export class User {
   @PrimaryGeneratedColumn()
@@ -20,4 +19,5 @@ export class User {
 
   @Column({ default: false })
   accountBlocked: boolean;
+
 }

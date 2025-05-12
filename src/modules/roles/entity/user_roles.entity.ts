@@ -13,9 +13,6 @@ export class UserRole {
   @ManyToOne(() => User, (user)=> user.userRoles)
   user: User;
 
-  @Column()
-  description: string;
-
-  @Column()
-  assignedAt: Date;
+  @Column({ type:'timestamp', default: () => "CURRENT_TIMESTAMP" }) // установить значение по умолчанию
+  assignedAt?: Date;
 }
