@@ -1,9 +1,14 @@
-import { NotFoundException, Injectable, BadRequestException, ConflictException } from '@nestjs/common';
+import {
+  NotFoundException,
+  Injectable,
+  BadRequestException,
+  ConflictException,
+} from '@nestjs/common';
 import { User } from 'src/modules/users/entity/user.entity';
 import { Role } from 'src/modules/roles/entity/roles.entity';
 import { Repository } from 'typeorm';
 import { InjectRepository } from '@nestjs/typeorm';
-import { ICreateUserDto, IUser } from '../types/User';
+import { ICreateUserDto } from '../types/User';
 import { UserRole } from '../../roles/entity/user_roles.entity';
 @Injectable()
 export class UsersService {
@@ -13,15 +18,17 @@ export class UsersService {
     @InjectRepository(Role)
     private readonly rolesRepository: Repository<Role>,
     @InjectRepository(UserRole)
-    private readonly userRoleRepository: Repository<UserRole>
+    private readonly userRoleRepository: Repository<UserRole>,
   ) {}
 
   async selectAllUsers(): Promise<User[] | null> {
-    return this.userRepository.find({ relations: {
+    return this.userRepository.find({
+      relations: {
         userRoles: {
-          role: true
+          role: true,
         },
-      }, });
+      },
+    });
   }
 
   async selectUserById(id: number): Promise<User | null> {
@@ -30,10 +37,7 @@ export class UsersService {
 
   private async validateUserCreation(userDto: ICreateUserDto): Promise<void> {
     const existingUser = await this.userRepository.findOne({
-      where: [
-        { login: userDto.login },
-        { email: userDto.email }
-      ]
+      where: [{ login: userDto.login }, { email: userDto.email }],
     });
 
     if (existingUser) {
@@ -50,48 +54,44 @@ export class UsersService {
         login: userDto.login,
         email: userDto.email,
         password: userDto.password,
-        userRoles: [role]
+        userRoles: [role],
       });
       const user = await this.userRepository.save(newUser);
-      await this.createUserRole({
-        user: user,
-        role
-      });
+      await this.createUserRole(user, role);
       return user;
-    }
-    catch (e) {
+    } catch (e) {
       throw new BadRequestException({
+        // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
         message: e.message,
-        error: e.error
+        // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
+        error: e.error,
       });
     }
   }
 
-  async createUserRole({user, role}) {
+  async createUserRole(user: User, role: Role): Promise<void> {
     try {
-      await this.userRoleRepository.save({ user, role });
-    }
-    catch (e) {
-      console.error(e)
+      const dto = { ...user, ...role };
+      await this.userRoleRepository.save(dto);
+    } catch (e) {
+      console.error(e);
       throw new BadRequestException({
         message: 'Failed to create user role relation',
-        error: e.error
+        error: e.error,
       });
     }
   }
 
   private async findRoleOrFail(roleId: number): Promise<Role> {
     const role = await this.rolesRepository.findOne({
-      where: { id: roleId }
+      where: { id: roleId },
     });
 
     if (!role) {
-      throw new NotFoundException(
-        {
-          message: 'Role does not exist',
-          error: `Role not found, please create role with id: ${roleId}`
-        }
-      );
+      throw new NotFoundException({
+        message: 'Role does not exist',
+        error: `Role not found, please create role with id: ${roleId}`,
+      });
     }
     return role;
   }

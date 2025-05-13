@@ -20,11 +20,10 @@ export class RolesService {
   }
   async createRole(id: IdRole): Promise<IRole> {
     // Проверка: Если ID меньше 1 или больше 3 кидаем ошибку
-    if(id < IdRole.ADMIN || id > IdRole.USER ) {
+    if (id < IdRole.ADMIN || id > IdRole.USER) {
       throw new NotFoundException('Id is not corrected');
     }
-    let rolesMap: Record<IdRole, IRole>;
-    rolesMap = {
+    const rolesMap: Record<IdRole, IRole> = {
       [IdRole.ADMIN]: {
         id: IdRole.ADMIN,
         name: ERole.ADMIN,
@@ -51,9 +50,9 @@ export class RolesService {
       throw new BadRequestException('Role already exists');
     }
     try {
-      return  await this.rolesRepository.save(role);
+      return await this.rolesRepository.save(role);
     } catch (e) {
-      throw new BadRequestException('Failed to create role');
+      throw new BadRequestException('Failed to create role', e);
     }
   }
 }

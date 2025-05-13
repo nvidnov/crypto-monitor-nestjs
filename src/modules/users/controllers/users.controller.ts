@@ -17,7 +17,8 @@ export class UsersController {
   constructor(private readonly usersService: UsersService) {}
   @ApiOperation({
     summary: 'Получить всех пользователей ',
-    description: 'Получить всех пользователей и их Роли из базы данных'})
+    description: 'Получить всех пользователей и их Роли из базы данных',
+  })
   @ApiResponse({ status: 200, type: [User] })
   @Get('/users')
   async getUsers(): Promise<User[]> {
@@ -28,7 +29,7 @@ export class UsersController {
     return users;
   }
 
-  @ApiOperation({ description: 'Получить пользователя по ID'})
+  @ApiOperation({ description: 'Получить пользователя по ID' })
   @Get('/users/:id')
   async getUser(@Param('id') id: number): Promise<User> {
     const User = await this.usersService.selectUserById(id);
@@ -42,7 +43,7 @@ export class UsersController {
   async createUser(@Body() user: IUser) {
     try {
       return await this.usersService.createUser(user);
-    } catch(e) {
+    } catch (e) {
       throw new BadRequestException(e);
     }
   }

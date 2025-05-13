@@ -7,12 +7,11 @@ export class RolesController {
   constructor(private readonly rolesService: RolesService) {}
   @Get('/roles/get')
   async getRoles(): Promise<IRole[]> {
-    const roles = await this.rolesService.getRoles();
-    return roles;
+    return await this.rolesService.getRoles();
   }
   @Post('/roles/create')
   async createRole(@Body() dto: ICreateRoleDto): Promise<IRole> {
-    const { id } = dto
+    const { id } = dto;
     return await this.rolesService.createRole(id);
   }
 }
