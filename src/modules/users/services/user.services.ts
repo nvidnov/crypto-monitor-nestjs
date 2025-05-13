@@ -10,6 +10,7 @@ import { Repository } from 'typeorm';
 import { InjectRepository } from '@nestjs/typeorm';
 import { ICreateUserDto } from '../types/User';
 import { UserRole } from '../../roles/entity/user_roles.entity';
+import { hashPassword } from '../../../common/password/hashPassword';
 @Injectable()
 export class UsersService {
   constructor(
@@ -32,7 +33,11 @@ export class UsersService {
   }
 
   async selectUserById(id: number): Promise<User | null> {
-    return await this.userRepository.findOne({ where: { id } });
+    const user = await this.userRepository.findOne({ where: { id } });
+    if (!user) {
+      throw new NotFoundException('User not found');
+    }
+    return user;
   }
 
   private async validateUserCreation(userDto: ICreateUserDto): Promise<void> {
@@ -48,12 +53,12 @@ export class UsersService {
   async createUser(userDto: ICreateUserDto): Promise<User> {
     try {
       await this.validateUserCreation(userDto);
-
+      const hash = await hashPassword(userDto.password);
       const role = await this.findRoleOrFail(userDto.role);
       const newUser = this.userRepository.create({
         login: userDto.login,
         email: userDto.email,
-        password: userDto.password,
+        password: hash,
         userRoles: [role],
       });
       const user = await this.userRepository.save(newUser);
@@ -71,7 +76,8 @@ export class UsersService {
 
   async createUserRole(user: User, role: Role): Promise<void> {
     try {
-      const dto = { ...user, ...role };
+      const dto = { user: user, role: role };
+      console.log(dto);
       await this.userRoleRepository.save(dto);
     } catch (e) {
       console.error(e);
