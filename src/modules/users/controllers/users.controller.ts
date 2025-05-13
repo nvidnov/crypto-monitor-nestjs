@@ -6,15 +6,19 @@ import {
   NotFoundException,
   Param,
   Post,
-  Put,
 } from '@nestjs/common';
 import { UsersService } from '../services/user.services';
 import { IUser } from '../types/User';
 import { User } from '../entity/user.entity';
+import { ApiOperation, ApiResponse } from '@nestjs/swagger';
 
 @Controller('/api')
 export class UsersController {
   constructor(private readonly usersService: UsersService) {}
+  @ApiOperation({
+    summary: 'Получить всех пользователей ',
+    description: 'Получить всех пользователей и их Роли из базы данных'})
+  @ApiResponse({ status: 200, type: [User] })
   @Get('/users')
   async getUsers(): Promise<User[]> {
     const users = await this.usersService.selectAllUsers();
@@ -24,6 +28,7 @@ export class UsersController {
     return users;
   }
 
+  @ApiOperation({ description: 'Получить пользователя по ID'})
   @Get('/users/:id')
   async getUser(@Param('id') id: number): Promise<User> {
     const User = await this.usersService.selectUserById(id);
