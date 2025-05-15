@@ -77,7 +77,6 @@ export class UsersService {
   async createUserRole(user: User, role: Role): Promise<void> {
     try {
       const dto = { user: user, role: role };
-      console.log(dto);
       await this.userRoleRepository.save(dto);
     } catch (e) {
       console.error(e);

@@ -8,7 +8,7 @@ import {
   Post,
 } from '@nestjs/common';
 import { UsersService } from '../services/user.services';
-import { IUser } from '../types/User';
+import { ICreateUserDto } from '../types/User';
 import { User } from '../entity/user.entity';
 import { ApiOperation, ApiResponse } from '@nestjs/swagger';
 
@@ -39,8 +39,9 @@ export class UsersController {
     return User;
   }
 
+  @ApiOperation({ description: 'Создать пользователя' })
   @Post('/users/create')
-  async createUser(@Body() user: IUser) {
+  async createUser(@Body() user: ICreateUserDto) {
     try {
       return await this.usersService.createUser(user);
     } catch (e) {
