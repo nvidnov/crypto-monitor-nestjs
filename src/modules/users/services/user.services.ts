@@ -50,7 +50,7 @@ export class UsersService {
     }
   }
 
-  async createUser(userDto: ICreateUserDto): Promise<User> {
+  public async createUser(userDto: ICreateUserDto): Promise<User> {
     try {
       await this.validateUserCreation(userDto);
       const hash = await hashPassword(userDto.password);
@@ -74,7 +74,7 @@ export class UsersService {
     }
   }
 
-  async createUserRole(user: User, role: Role): Promise<void> {
+  public async createUserRole(user: User, role: Role): Promise<void> {
     try {
       const dto = { user: user, role: role };
       await this.userRoleRepository.save(dto);
@@ -99,5 +99,19 @@ export class UsersService {
       });
     }
     return role;
+  }
+
+  public async findUserByEmail(email: string): Promise<User | null> {
+    const user = await this.userRepository.findOne({
+      where: {
+        email: email,
+      },
+      relations: {
+        userRoles: {
+          role: true,
+        },
+      },
+    });
+    return user;
   }
 }

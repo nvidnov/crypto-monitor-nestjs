@@ -23,16 +23,7 @@ export class AuthService {
     private readonly userRepository: Repository<User>,
   ) {}
   async login(dto: IAuthLoginDto): Promise<IAuthLoginResponse> {
-    const user = await this.userRepository.findOne({
-      where: {
-        email: dto.email,
-      },
-      relations: {
-        userRoles: {
-          role: true,
-        },
-      },
-    });
+    const user = await this.userService.findUserByEmail(dto.email);
     if (!user) throw new NotFoundException('User not found');
 
     const isValid = await this.checkValidation(dto.password, user.password);
@@ -63,6 +54,7 @@ export class AuthService {
     const payload = { ...user };
     return await this.jwtService.signAsync(payload);
   }
+
   private sanitizeUser(user: User): ISanitizeUser {
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
     const { password, ...userWithoutPassword } = user;
