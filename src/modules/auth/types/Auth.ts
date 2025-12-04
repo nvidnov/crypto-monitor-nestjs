@@ -6,6 +6,8 @@ export interface IAuthLoginDto {
 }
 
 export interface IAuthRegisterDto {
+  firstName: string;
+  lastName: string;
   login: string;
   password: string;
   email: string;

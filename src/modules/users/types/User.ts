@@ -10,6 +10,8 @@ export interface IUser {
 }
 
 export interface ICreateUserDto {
+  firstName: string;
+  lastName: string;
   login: string;
   password: string;
   email: string;

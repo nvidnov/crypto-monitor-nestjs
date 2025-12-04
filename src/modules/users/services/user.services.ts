@@ -56,6 +56,8 @@ export class UsersService {
       const hash = await hashPassword(userDto.password);
       const role = await this.findRoleOrFail(userDto.role);
       const newUser = this.userRepository.create({
+        firstName: userDto.firstName,
+        lastName: userDto.lastName,
         login: userDto.login,
         email: userDto.email,
         password: hash,

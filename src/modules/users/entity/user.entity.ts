@@ -8,6 +8,14 @@ export class User {
   @PrimaryGeneratedColumn()
   id: number;
 
+  @ApiProperty({ example: 'Nikita', description: 'Имя Пользователя' })
+  @Column({ unique: false, nullable: true })
+  firstName: string;
+
+  @ApiProperty({ example: 'Vidnov', description: 'Фамилия Пользователя' })
+  @Column({ unique: false, nullable: true })
+  lastName: string;
+
   @ApiProperty({ example: 'nvidnov', description: 'Логин Пользователя' })
   @Column({ unique: true, nullable: false })
   login: string;

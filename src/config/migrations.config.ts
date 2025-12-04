@@ -25,4 +25,5 @@ AppDataSource.initialize()
   .catch((error) => {
     console.error('Error:', error);
   });
+
 export default AppDataSource;
