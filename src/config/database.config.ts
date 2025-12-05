@@ -3,6 +3,7 @@ import { DataSourceOptions } from 'typeorm';
 import { User } from '../modules/users/entity/user.entity';
 import { Role } from '../modules/roles/entity/roles.entity';
 import { UserRole } from '../modules/roles/entity/user_roles.entity';
+import { VerificationCode } from '../modules/verification-code/entity/verification-code.entity';
 
 export const DatabaseConfig: DataSourceOptions = {
   type: process.env.DB_TYPE as 'postgres',
@@ -11,6 +12,6 @@ export const DatabaseConfig: DataSourceOptions = {
   username: process.env.DB_USERNAME,
   password: process.env.DB_PASSWORD,
   database: process.env.DB_NAME,
-  entities: [User, Role, UserRole],
+  entities: [User, Role, UserRole, VerificationCode],
   // synchronize: process.env.PROD === 'false' ? true : false,
 };

@@ -3,6 +3,13 @@
 /node_modules
 /build
 
+# Yarn Berry
+.yarn/*
+!.yarn/releases
+!.yarn/plugins
+!.yarn/sdks
+!.yarn/versions
+
 # Logs
 logs
 *.log
