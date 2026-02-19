@@ -16,4 +16,7 @@ export class VerificationCode {
 
   @CreateDateColumn()
   createdAt: Date;
+
+  @Column({ default: false })
+  isUsed: boolean;
 }

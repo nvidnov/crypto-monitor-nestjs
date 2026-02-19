@@ -18,3 +18,6 @@ export interface IAuthLoginResponse {
   user: ISanitizeUser;
   accessToken: string;
 }
+export interface IAuthCheckDto {
+  email: string;
+}

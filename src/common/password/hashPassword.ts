@@ -1,7 +1,7 @@
 import * as bcrypt from 'bcrypt';
 
 const SALT_ROUNDS = 12;
-const PEPPER = process.env.PEPPER_SECRET; // Хранится отдельно от базы
+const PEPPER = process.env.PEPPER_SECRET;
 
 // Хеширование пароля
 export async function hashPassword(password: string) {

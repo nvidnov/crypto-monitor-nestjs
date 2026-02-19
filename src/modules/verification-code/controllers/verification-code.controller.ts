@@ -15,6 +15,6 @@ export class VerificationController {
     @Body('email') email: string,
     @Body('code') code: string
   ) {
-    // return this.service.verify(email, code);
+    return this.service.verify(email, code);
   }
 }
